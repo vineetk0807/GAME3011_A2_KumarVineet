@@ -14,10 +14,12 @@ public class LockPick : MonoBehaviour
     [Header("Mouse/Cursor parameters")] 
     public bool isClicking;
 
+
+    public LockpickSystem lockpickSystem;
     // Start is called before the first frame update
     void Start()
     {
-        
+        lockpickSystem = transform.root.gameObject.GetComponent<LockpickSystem>();
     }
 
     // Update is called once per frame
@@ -70,7 +72,9 @@ public class LockPick : MonoBehaviour
     /// </summary>
     private void OnMouseDown()
     {
+        GameManager.GetInstance().executeOnce = false;
         isClicking = true;
+        lockpickSystem.PlaySounds((int)Sounds.LOCKPICKING);
     }
 
 
@@ -80,5 +84,6 @@ public class LockPick : MonoBehaviour
     private void OnMouseUp()
     {
         isClicking = false;
+        lockpickSystem.PlaySounds((int)Sounds.STOP);
     }
 }
