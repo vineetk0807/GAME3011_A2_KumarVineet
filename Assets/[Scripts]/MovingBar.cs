@@ -39,7 +39,10 @@ public class MovingBar : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Trigger.transform.position = Vector3.Lerp(startPoint.position, endPoint.position, Mathf.PingPong(Time.time * speedOfTrigger, 1.0f));
+        if (!GameManager.GetInstance().isBroken && GameManager.GetInstance().isClicked)
+        {
+            Trigger.transform.position = Vector3.Lerp(startPoint.position, endPoint.position, Mathf.PingPong(Time.time * speedOfTrigger, 1.0f));
+        }
     }
 
 
@@ -55,5 +58,12 @@ public class MovingBar : MonoBehaviour
     }
 
 
-
+    /// <summary>
+    /// Loads direction
+    /// </summary>
+    /// <param name="direction"></param>
+    public void SetDirection(SpriteRenderer visualAssist, int direction)
+    {
+        visualAssist.sprite = ArrowKeyList[direction];
+    }
 }

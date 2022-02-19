@@ -10,10 +10,14 @@ public class LockPick : MonoBehaviour
     [Header("Position and Angle")]
     public Vector3 currentPosition;
     public float m_fAngle;
+    public float m_fPreviousAngle;
+    public bool m_bKeepInCheck = false;
 
     [Header("Mouse/Cursor parameters")] 
     public bool isClicking;
 
+    [Header("Time")] 
+    public float time = 0f;
 
     public LockpickSystem lockpickSystem;
     // Start is called before the first frame update
@@ -26,7 +30,7 @@ public class LockPick : MonoBehaviour
     void Update()
     {
         // Move if input is down
-        if (isClicking)
+        if (isClicking && !GameManager.GetInstance().isBroken)
         {
             if (Input.GetMouseButton(0))
             {
@@ -41,6 +45,8 @@ public class LockPick : MonoBehaviour
     /// </summary>
     private void MovePick()
     {
+        m_fPreviousAngle = m_fAngle;
+
         // Mouse position
         currentPosition = Input.mousePosition;
 
@@ -64,6 +70,27 @@ public class LockPick : MonoBehaviour
 
         // Set Rotation
         transform.rotation = Quaternion.Euler(0f, 0f, m_fAngle);
+
+        // In clicked mode, perform keep in check VERIFICATION in 3s
+        // Keep on angle in check
+        if (GameManager.GetInstance().isClicked)
+        {
+            time += Time.deltaTime;
+
+            if (time > 3f)
+            {
+                time = 0;
+
+                if (!m_bKeepInCheck)
+                {
+                    Debug.Log("Lock was not kept in check");
+                    GameManager.GetInstance().NotKeptInCheck();
+                }
+            }
+
+            // Angle check
+            AngleCheck();
+        }
     }
 
 
@@ -85,5 +112,45 @@ public class LockPick : MonoBehaviour
     {
         isClicking = false;
         lockpickSystem.PlaySounds((int)Sounds.STOP);
+
+        // Release the lock during clicked mode, lock breaks !
+        if (GameManager.GetInstance().isClicked)
+        {
+            GameManager.GetInstance().LockBroken();
+        }
+    }
+
+    /// <summary>
+    /// Compares the current direction clock is supposed to rotate and
+    /// checks the angle of rotation
+    /// </summary>
+    private void AngleCheck()
+    {
+        // If clockwise
+        if (GameManager.GetInstance().clockwise)
+        {
+
+            // If rotating clockwise
+            if (m_fPreviousAngle > m_fAngle)
+            {
+                m_bKeepInCheck = true;
+            }
+            else
+            {
+                m_bKeepInCheck = false;
+            }
+        }
+        else 
+        {
+            // If rotating anticlockwise
+            if (m_fPreviousAngle < m_fAngle)
+            {
+                m_bKeepInCheck = true;
+            }
+            else
+            {
+                m_bKeepInCheck = false;
+            }
+        }
     }
 }

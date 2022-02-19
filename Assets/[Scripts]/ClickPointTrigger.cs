@@ -9,7 +9,8 @@ public class ClickPointTrigger : MonoBehaviour
     {
         if (other.gameObject.CompareTag("ClickPoint"))
         {
-            Debug.Log("In");
+            GetComponent<SpriteRenderer>().color = Color.green;
+            GameManager.GetInstance().isInTrigger = true;
         }
     }
 
@@ -17,7 +18,8 @@ public class ClickPointTrigger : MonoBehaviour
     {
         if (other.gameObject.CompareTag("ClickPoint"))
         {
-            Debug.Log("Out");
+            GetComponent<SpriteRenderer>().color = Color.red;
+            GameManager.GetInstance().isInTrigger = false;
         }
     }
 }
