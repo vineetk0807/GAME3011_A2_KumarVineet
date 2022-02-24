@@ -66,10 +66,14 @@ public class GameManager : MonoBehaviour
 
     [Header("UI")] 
     public TextMeshProUGUI checks_TMP;
-
     private int checksRemaining = 5;
 
+    public TextMeshProUGUI time_TMP;
+    private float timeRemaining = 30f;
+    private float currentTime = 0f;
 
+
+    [Header("-------EXECUTIONS-------")]
     // Executions
     public bool executeOnce = false;
     public bool isClicked = false;
@@ -85,6 +89,7 @@ public class GameManager : MonoBehaviour
     public bool keyPressLEFT = false;
     public bool keyPressRIGHT = false;
     private bool isPlaying = false;
+    public bool isUnlocked = false;
 
     /// <summary>
     /// Using awake to set instance for lazy singleton
@@ -104,6 +109,8 @@ public class GameManager : MonoBehaviour
         lockSprite.sprite = spriteLocked;
 
         checksRemaining = 5;
+        timeRemaining = 30f;
+        time_TMP.text = ((int)timeRemaining).ToString();
 
         isBroken = false;
 
@@ -115,6 +122,16 @@ public class GameManager : MonoBehaviour
     {
         if (isPlaying)
         {
+            if (!isBroken && !isUnlocked)
+            {
+                if (Time.time - currentTime >= 1)
+                {
+                    currentTime = Time.time;
+                    timeRemaining -= 1;
+                    time_TMP.text = ((int)timeRemaining).ToString();
+                }
+            }
+
             PickLock();
         }
     }
@@ -147,7 +164,7 @@ public class GameManager : MonoBehaviour
                 }
             }
         }
-        else
+        else if(!isUnlocked)
         {
             if (!isBroken)
             {
@@ -246,6 +263,11 @@ public class GameManager : MonoBehaviour
                         {
                             currentDirection = RandomDirectionOrder[currentIndex];
                         }
+                        else
+                        {
+                            Debug.Log("Won");
+                            LockUnlocked();
+                        }
                     }
                     else
                     {
@@ -318,6 +340,25 @@ public class GameManager : MonoBehaviour
     {
         isBroken = true;
         lockSprite.sprite = spriteUnsuccessful;
+        
+        // End Game
+        GameOver();
+    }
+
+
+    /// <summary>
+    /// Lock Unlocked
+    /// </summary>
+    public void LockUnlocked()
+    {
+        isBroken = false;
+        isUnlocked = true;
+        isClicked = false;
+        isPlaying = false;
+        lockSprite.sprite = spriteUnlocked;
+
+        // End Game
+        GameOver();
     }
 
 
@@ -366,11 +407,14 @@ public class GameManager : MonoBehaviour
     [Header("-------MENU PANEL-------")]
     public GameObject MenuPanel;
     public GameObject LockGamePanel;
+    public GameObject GameOverPanel;
+    public TextMeshProUGUI TMP_Results;
 
     public void MainMenu()
     {
         MenuPanel.SetActive(true);
         LockGamePanel.SetActive(false);
+        GameOverPanel.SetActive(false);
         isPlaying = false;
     }
     
@@ -378,8 +422,26 @@ public class GameManager : MonoBehaviour
     {
         MenuPanel.SetActive(false);
         LockGamePanel.SetActive(true);
+        GameOverPanel.SetActive(false);
         isPlaying = true;
 
         // Add additional restart functionality
+
+    }
+
+    public void GameOver()
+    {
+        MenuPanel.SetActive(false);
+        LockGamePanel.SetActive(true);
+        GameOverPanel.SetActive(true);
+
+        if (isUnlocked)
+        {
+            TMP_Results.text = "LOCK PICK SUCCESSFUL";
+        }
+        else if (isBroken)
+        {
+            TMP_Results.text = "LOCK PICK FAILED";
+        }
     }
 }

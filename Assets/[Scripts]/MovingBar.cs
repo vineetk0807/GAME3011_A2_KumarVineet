@@ -28,12 +28,25 @@ public class MovingBar : MonoBehaviour
     private List<int> directionList;
 
     public float speedOfTrigger = 1f;
+    public float difficultyFactor = 1f;
 
     // Start is called before the first frame update
     void Start()
     {
         directionList = new List<int>();
         LoadList();
+
+        switch (GameManager.GetInstance().currentDifficulty)
+        {
+            case Difficulty.EASY:
+                break;
+
+            case Difficulty.NORMAL:
+                break;
+
+            case Difficulty.HARD:
+                break;
+        }
     }
 
     // Update is called once per frame
@@ -41,7 +54,7 @@ public class MovingBar : MonoBehaviour
     {
         if (!GameManager.GetInstance().isBroken && GameManager.GetInstance().isClicked)
         {
-            Trigger.transform.position = Vector3.Lerp(startPoint.position, endPoint.position, Mathf.PingPong(Time.time * speedOfTrigger, 1.0f));
+            Trigger.transform.position = Vector3.Lerp(startPoint.position, endPoint.position, Mathf.PingPong(Time.time * speedOfTrigger , 1.0f));
         }
     }
 

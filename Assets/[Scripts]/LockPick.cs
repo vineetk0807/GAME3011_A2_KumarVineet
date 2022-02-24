@@ -31,7 +31,7 @@ public class LockPick : MonoBehaviour
     void Update()
     {
         // Move if input is down
-        if (isClicking && !GameManager.GetInstance().isBroken)
+        if (isClicking && !GameManager.GetInstance().isBroken && !GameManager.GetInstance().isUnlocked)
         {
             if (Input.GetMouseButton(0))
             {
@@ -84,7 +84,6 @@ public class LockPick : MonoBehaviour
 
                 if (!m_bKeepInCheck)
                 {
-                    Debug.Log("Lock was not kept in check");
                     GameManager.GetInstance().NotKeptInCheck();
                 }
             }
