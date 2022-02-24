@@ -18,7 +18,7 @@ public class ClickPointTrigger : MonoBehaviour
     {
         if (other.gameObject.CompareTag("ClickPoint"))
         {
-            GetComponent<SpriteRenderer>().color = Color.red;
+            GetComponent<SpriteRenderer>().color = Color.blue;
             GameManager.GetInstance().isInTrigger = false;
         }
     }

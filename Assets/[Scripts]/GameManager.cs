@@ -8,8 +8,15 @@ using Random = UnityEngine.Random;
 public enum Difficulty
 {
     EASY,
-    MEDIUM,
+    NORMAL,
     HARD
+}
+
+public enum Skill
+{
+    SILVER,
+    GOLD,
+    PLATINUM
 }
 
 public class GameManager : MonoBehaviour
@@ -52,9 +59,10 @@ public class GameManager : MonoBehaviour
 
     // Difficulty
     [Header("Difficulty and Skill")] 
-    public List<float> difficultyFactor;
+    public List<float> skillFactor;
 
-    public Difficulty currentDifficulty = Difficulty.MEDIUM;
+    public Difficulty currentDifficulty = Difficulty.EASY;
+    public Skill currentSkill = Skill.SILVER;
 
     [Header("UI")] 
     public TextMeshProUGUI checks_TMP;
@@ -76,6 +84,7 @@ public class GameManager : MonoBehaviour
     public bool keyPressDOWN = false;
     public bool keyPressLEFT = false;
     public bool keyPressRIGHT = false;
+    private bool isPlaying = false;
 
     /// <summary>
     /// Using awake to set instance for lazy singleton
@@ -83,7 +92,7 @@ public class GameManager : MonoBehaviour
     private void Awake()
     {
         _instance = this;
-        difficultyFactor = new List<float>();
+        //skillFactor = new List<float>();
     }
 
     // Start is called before the first frame update
@@ -91,11 +100,6 @@ public class GameManager : MonoBehaviour
     {
         // Generate random angle
         GenerateRandomAngle();
-
-        // difficulty factor
-        difficultyFactor.Add(0.6f); 
-        difficultyFactor.Add(0.3f); 
-        difficultyFactor.Add(0.09f);
 
         lockSprite.sprite = spriteLocked;
 
@@ -109,10 +113,24 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (isPlaying)
+        {
+            PickLock();
+        }
+    }
+
+
+    //****************** PICK LOCK METHOD ******************//
+
+    /// <summary>
+    /// PICK THE LOCK !!!!!!!!!!!!!!!!!!!
+    /// </summary>
+    private void PickLock()
+    {
         // Check for difference
         if (!isClicked && !isBroken)
         {
-            if (Math.Abs((lockPick.m_fAngle - randomAngle)) < difficultyFactor[(int)currentDifficulty])
+            if (Math.Abs((lockPick.m_fAngle - randomAngle)) < skillFactor[(int)currentSkill])
             {
                 if (!executeOnce)
                 {
@@ -136,8 +154,6 @@ public class GameManager : MonoBehaviour
                 // Reset time
                 if (m_fStartingTime == 0)
                 {
-                    Debug.Log("Started time");
-
                     // clockwise/anticlockwise
                     clockwise = (Random.Range(2, 10) % 2 == 0) ? true : false;
                 }
@@ -155,7 +171,7 @@ public class GameManager : MonoBehaviour
             }
 
 
-            if((keyPressUP = (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))) 
+            if ((keyPressUP = (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow)))
                 || (keyPressLEFT = (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow)))
                 || (keyPressRIGHT = (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow)))
                 || (keyPressDOWN = (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow))))
@@ -175,6 +191,7 @@ public class GameManager : MonoBehaviour
                             {
                                 keyPressed = true;
                             }
+
                             break;
 
                         case (int)ArrowDirection.DOWN:
@@ -182,6 +199,7 @@ public class GameManager : MonoBehaviour
                             {
                                 keyPressed = true;
                             }
+
                             break;
 
                         case (int)ArrowDirection.LEFT:
@@ -189,6 +207,7 @@ public class GameManager : MonoBehaviour
                             {
                                 keyPressed = true;
                             }
+
                             break;
 
                         case (int)ArrowDirection.RIGHT:
@@ -196,6 +215,7 @@ public class GameManager : MonoBehaviour
                             {
                                 keyPressed = true;
                             }
+
                             break;
                     }
 
@@ -229,19 +249,22 @@ public class GameManager : MonoBehaviour
                     }
                     else
                     {
-                        GenerateRandomDirection();
                         currentIndex = 0;
+                        GenerateRandomDirection();
+                        currentDirection = RandomDirectionOrder[currentIndex];
                         VisualAssist0.color = Color.white;
                         VisualAssist1.color = Color.white;
                         VisualAssist2.color = Color.white;
                         VisualAssist3.color = Color.white;
                     }
-
-                    keyPressDOWN = false;
-                    keyPressUP = false;
-                    keyPressLEFT = false;
-                    keyPressRIGHT = false;
                 }
+
+
+                // Reset key press
+                keyPressDOWN = false;
+                keyPressUP = false;
+                keyPressLEFT = false;
+                keyPressRIGHT = false;
             }
         }
     }
@@ -264,11 +287,11 @@ public class GameManager : MonoBehaviour
     {
         if (clockwise)
         {
-            directionIndicator.transform.rotation *= Quaternion.AngleAxis(-45 * Time.deltaTime, Vector3.forward);
+            directionIndicator.transform.rotation *= Quaternion.AngleAxis(-45 * Time.deltaTime * 10f, Vector3.forward);
         }
         else
         {
-            directionIndicator.transform.rotation *= Quaternion.AngleAxis(45 * Time.deltaTime, Vector3.forward);
+            directionIndicator.transform.rotation *= Quaternion.AngleAxis(45 * Time.deltaTime * 10f, Vector3.forward);
         }
     }
 
@@ -294,7 +317,6 @@ public class GameManager : MonoBehaviour
     public void LockBroken()
     {
         isBroken = true;
-        Debug.Log("Broken");
         lockSprite.sprite = spriteUnsuccessful;
     }
 
@@ -336,5 +358,28 @@ public class GameManager : MonoBehaviour
                 i++;
             }
         }
+    }
+
+
+    //************************* MENU *************************//
+
+    [Header("-------MENU PANEL-------")]
+    public GameObject MenuPanel;
+    public GameObject LockGamePanel;
+
+    public void MainMenu()
+    {
+        MenuPanel.SetActive(true);
+        LockGamePanel.SetActive(false);
+        isPlaying = false;
+    }
+    
+    public void StartGame()
+    {
+        MenuPanel.SetActive(false);
+        LockGamePanel.SetActive(true);
+        isPlaying = true;
+
+        // Add additional restart functionality
     }
 }

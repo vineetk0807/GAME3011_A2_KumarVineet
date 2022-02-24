@@ -20,10 +20,11 @@ public class LockPick : MonoBehaviour
     public float time = 0f;
 
     public LockpickSystem lockpickSystem;
+
     // Start is called before the first frame update
     void Start()
     {
-        lockpickSystem = transform.root.gameObject.GetComponent<LockpickSystem>();
+
     }
 
     // Update is called once per frame
