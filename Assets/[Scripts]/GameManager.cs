@@ -315,10 +315,12 @@ public class GameManager : MonoBehaviour
         if (clockwise)
         {
             directionIndicator.transform.rotation *= Quaternion.AngleAxis(-45 * Time.deltaTime * 10f, Vector3.forward);
+            directionIndicator.GetComponent<SpriteRenderer>().flipX = true;
         }
         else
         {
             directionIndicator.transform.rotation *= Quaternion.AngleAxis(45 * Time.deltaTime * 10f, Vector3.forward);
+            directionIndicator.GetComponent<SpriteRenderer>().flipX = false;
         }
     }
 
