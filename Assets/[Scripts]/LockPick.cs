@@ -72,13 +72,13 @@ public class LockPick : MonoBehaviour
         // Set Rotation
         transform.rotation = Quaternion.Euler(0f, 0f, m_fAngle);
 
-        // In clicked mode, perform keep in check VERIFICATION in 3s
+        // In clicked mode, perform keep in check VERIFICATION in 2s
         // Keep on angle in check
         if (GameManager.GetInstance().isClicked)
         {
             time += Time.deltaTime;
 
-            if (time > 3f)
+            if (time > 2f)
             {
                 time = 0;
 
@@ -99,9 +99,12 @@ public class LockPick : MonoBehaviour
     /// </summary>
     private void OnMouseDown()
     {
-        GameManager.GetInstance().executeOnce = false;
-        isClicking = true;
-        lockpickSystem.PlaySounds((int)Sounds.LOCKPICKING);
+        if (!GameManager.GetInstance().isBroken && !GameManager.GetInstance().isUnlocked)
+        {
+            GameManager.GetInstance().executeOnce = false;
+            isClicking = true;
+            lockpickSystem.PlaySounds((int)Sounds.LOCKPICKING);
+        }
     }
 
 

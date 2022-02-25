@@ -51,7 +51,7 @@ public class GameManager : MonoBehaviour
 
     [Header("Moving Bar")] 
     public MovingBar movingBar;
-
+    public GameObject Trigger;
     public SpriteRenderer VisualAssist0;
     public SpriteRenderer VisualAssist1;
     public SpriteRenderer VisualAssist2;
@@ -66,7 +66,8 @@ public class GameManager : MonoBehaviour
 
     [Header("UI")] 
     public TextMeshProUGUI checks_TMP;
-    private int checksRemaining = 5;
+    private int checksRemaining = 3;
+    public int numberOfChecks = 3;
 
     public TextMeshProUGUI time_TMP;
     private float timeRemaining = 30f;
@@ -108,7 +109,7 @@ public class GameManager : MonoBehaviour
 
         lockSprite.sprite = spriteLocked;
 
-        checksRemaining = 5;
+        checksRemaining = numberOfChecks;
         timeRemaining = 30f;
         time_TMP.text = ((int)timeRemaining).ToString();
 
@@ -129,6 +130,11 @@ public class GameManager : MonoBehaviour
                     currentTime = Time.time;
                     timeRemaining -= 1;
                     time_TMP.text = ((int)timeRemaining).ToString();
+
+                    if (timeRemaining <= 0)
+                    {
+                        LockBroken();
+                    }
                 }
             }
 
@@ -195,7 +201,7 @@ public class GameManager : MonoBehaviour
             {
                 if (!isInTrigger)
                 {
-                    Debug.Log("Not in Trigger !!!");
+                    //Debug.Log("Not in Trigger !!!");
                     LockBroken();
                 }
                 else
@@ -265,7 +271,6 @@ public class GameManager : MonoBehaviour
                         }
                         else
                         {
-                            Debug.Log("Won");
                             LockUnlocked();
                         }
                     }
@@ -340,7 +345,7 @@ public class GameManager : MonoBehaviour
     {
         isBroken = true;
         lockSprite.sprite = spriteUnsuccessful;
-        
+        Trigger.GetComponent<SpriteRenderer>().color = Color.blue;
         // End Game
         GameOver();
     }
@@ -426,7 +431,22 @@ public class GameManager : MonoBehaviour
         isPlaying = true;
 
         // Add additional restart functionality
+        // Change the angle, pick rotation and sprite
+        GenerateRandomAngle();
+        lockPick.gameObject.transform.rotation = Quaternion.Euler(0f,0f,0f);
+        lockSprite.sprite = spriteLocked;
 
+        // reset UI values
+        checksRemaining = numberOfChecks;
+        checks_TMP.text = checksRemaining.ToString();
+        timeRemaining = 30f;
+        time_TMP.text = ((int)timeRemaining).ToString();
+
+        isClicked = isBroken = isUnlocked = false;
+
+        RandomDirectionOrder.Clear();
+        currentIndex = 0;
+        movingBar.ResetMovingBar(VisualAssist0, VisualAssist1, VisualAssist2, VisualAssist3);
     }
 
     public void GameOver()
