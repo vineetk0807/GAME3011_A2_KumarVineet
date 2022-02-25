@@ -47,6 +47,10 @@ public class TutorialScript : MonoBehaviour
     private void OnEnable()
     {
         RestartTutorial();
+        directionAnimator.SetBool(restart, false);
+        PickAnimator.SetBool(restart, false);
+        directionAnimator.SetBool(clockwise, false);
+        LockSpriteRenderer.sprite = locked;
     }
 
     // Update is called once per frame
