@@ -73,6 +73,8 @@ public class GameManager : MonoBehaviour
 
     public TextMeshProUGUI time_TMP;
     private float timeRemaining = 30f;
+    private float timeFactorEasy = 1.5f;
+    private float timeFactorDefault = 1f;
     private float currentTime = 0f;
 
     public TextMeshProUGUI TMP_UI_difficulty;
@@ -114,7 +116,16 @@ public class GameManager : MonoBehaviour
         lockSprite.sprite = spriteLocked;
 
         checksRemaining = numberOfChecks;
-        timeRemaining = 30f;
+
+        if (currentSkill == Skill.SILVER)
+        {
+            timeRemaining = 30f * timeFactorEasy;
+        }
+        else
+        {
+            timeRemaining = 30f * timeFactorDefault;
+        }
+
         time_TMP.text = ((int)timeRemaining).ToString();
 
         isBroken = false;
@@ -448,6 +459,9 @@ public class GameManager : MonoBehaviour
         isPlaying = false;
     }
     
+    /// <summary>
+    /// Start game to reset values
+    /// </summary>
     public void StartGame()
     {
         MenuPanel.SetActive(false);
@@ -465,6 +479,15 @@ public class GameManager : MonoBehaviour
         checksRemaining = numberOfChecks;
         checks_TMP.text = checksRemaining.ToString();
         timeRemaining = 30f;
+        if (currentSkill == Skill.SILVER)
+        {
+            timeRemaining = 30f * timeFactorEasy;
+        }
+        else
+        {
+            timeRemaining = 30f * timeFactorDefault;
+        }
+
         time_TMP.text = ((int)timeRemaining).ToString();
 
         isClicked = isBroken = isUnlocked = false;
@@ -474,6 +497,9 @@ public class GameManager : MonoBehaviour
         movingBar.ResetMovingBar(VisualAssist0, VisualAssist1, VisualAssist2, VisualAssist3);
     }
 
+    /// <summary>
+    /// Game Over functionality
+    /// </summary>
     public void GameOver()
     {
         MenuPanel.SetActive(false);
@@ -488,5 +514,17 @@ public class GameManager : MonoBehaviour
         {
             TMP_Results.text = "LOCK PICK FAILED";
         }
+    }
+
+    /// <summary>
+    /// Quit game functionality
+    /// </summary>
+    public void QuitGame()
+    {
+        #if UNITY_EDITOR
+                UnityEditor.EditorApplication.isPlaying = false;
+        #else
+                 Application.Quit();
+        #endif
     }
 }

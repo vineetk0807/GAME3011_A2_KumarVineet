@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -41,6 +42,11 @@ public class TutorialScript : MonoBehaviour
         MovingBar.SetActive(false);
         DirectionCircle.SetActive(false);
         Step1();
+    }
+
+    private void OnEnable()
+    {
+        RestartTutorial();
     }
 
     // Update is called once per frame
