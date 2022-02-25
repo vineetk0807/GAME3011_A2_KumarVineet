@@ -1,42 +1,46 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class TutorialScript : MonoBehaviour
 {
+    [Header("Animations")]
     public Animator PickAnimator;
     public Animator directionAnimator;
-
-
     public readonly int clockwise = Animator.StringToHash("Clockwise");
     public readonly int restart = Animator.StringToHash("Restart");
 
-
-    public GameObject Trigger;
-    public TutorialTrigger tutorialTrigger;
-    public Transform startPoint;
-    public Transform endPoint;
-    public float speedOfTrigger = 1f;
-
-    public bool keyMatch = false;
-
-    public bool executeOnce = false;
-
-
+    [Header("Lock")]
     public SpriteRenderer LockSpriteRenderer;
     public Sprite locked;
     public Sprite clicked;
     public Sprite unlocked;
 
+    [Header("Moving Bar and Circle")]
     public GameObject MovingBar;
     public GameObject DirectionCircle;
+    public GameObject Trigger;
+    public TutorialTrigger tutorialTrigger;
+    public Transform startPoint;
+    public Transform endPoint;
 
+    [Header("Text")]
+    public TextMeshProUGUI TMP_Step1;
+    public TextMeshProUGUI TMP_Step2;
+    public TextMeshProUGUI TMP_Step3;
+
+    [Header("Executions")]
+    public float speedOfTrigger = 1f;
+    public bool keyMatch = false;
+    public bool executeOnce = false;
 
     // Start is called before the first frame update
     void Start()
     {
         MovingBar.SetActive(false);
         DirectionCircle.SetActive(false);
+        Step1();
     }
 
     // Update is called once per frame
@@ -64,8 +68,15 @@ public class TutorialScript : MonoBehaviour
         directionAnimator.SetBool(clockwise,true);
         keyMatch = true;
         LockSpriteRenderer.sprite = clicked;
+        Step2();
+        StartCoroutine(DelayForStep3());
     }
 
+    IEnumerator DelayForStep3()
+    {
+        yield return new WaitForSeconds(1.5f);
+        Step3();
+    }
 
     /// <summary>
     /// Coroutine for restarting the tutorial
@@ -100,5 +111,42 @@ public class TutorialScript : MonoBehaviour
 
         MovingBar.SetActive(false);
         DirectionCircle.SetActive(false);
+
+        Step1();
+    }
+
+
+
+    /// <summary>
+    /// Step 1 text
+    /// </summary>
+    public void Step1()
+    {
+        TMP_Step1.color = Color.green;
+        TMP_Step2.color = Color.black;
+        TMP_Step3.color = Color.black;
+        
+    }
+
+    /// <summary>
+    /// Step 1 text
+    /// </summary>
+    public void Step2()
+    {
+        TMP_Step1.color = Color.black;
+        TMP_Step2.color = Color.green;
+        TMP_Step3.color = Color.black;
+
+    }
+
+    /// <summary>
+    /// Step 1 text
+    /// </summary>
+    public void Step3()
+    {
+        TMP_Step1.color = Color.black;
+        TMP_Step2.color = Color.black;
+        TMP_Step3.color = Color.green;
+
     }
 }

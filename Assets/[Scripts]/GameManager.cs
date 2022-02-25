@@ -48,6 +48,8 @@ public class GameManager : MonoBehaviour
 
     [Header("Direction Indicator")] 
     public GameObject directionIndicator;
+    public SpriteRenderer directionBackground;
+    public Color originalBkgColor = Color.gray;
 
     [Header("Moving Bar")] 
     public MovingBar movingBar;
@@ -73,6 +75,8 @@ public class GameManager : MonoBehaviour
     private float timeRemaining = 30f;
     private float currentTime = 0f;
 
+    public TextMeshProUGUI TMP_UI_difficulty;
+    public TextMeshProUGUI TMP_UI_skill;
 
     [Header("-------EXECUTIONS-------")]
     // Executions
@@ -330,6 +334,7 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public void NotKeptInCheck()
     {
+        lockPickSystem.PlaySounds((int)Sounds.BUZZER);
         checksRemaining -= 1;
         checks_TMP.text = checksRemaining.ToString();
 
@@ -337,6 +342,24 @@ public class GameManager : MonoBehaviour
         {
             LockBroken();
         }
+        directionBackground.color = Color.red;
+        
+        StartCoroutine(LerpColor());
+    }
+
+    IEnumerator LerpColor()
+    {
+        float timer = 0.0f;
+
+        while (timer < 2f)
+        {
+            timer += Time.deltaTime;
+            directionBackground.color = Color.Lerp(Color.red, Color.grey, timer / 2f);
+
+            yield return new WaitForEndOfFrame();
+        }
+
+        yield return new WaitForSeconds(2);
     }
 
 

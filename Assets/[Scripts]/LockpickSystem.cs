@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,6 +8,7 @@ public enum Sounds
     LOCKPICKING,
     CLICKED,
     ACTIVATE,
+    BUZZER,
     STOP
 }
 
@@ -18,10 +20,16 @@ public class LockpickSystem : MonoBehaviour
     // List of Audio Clips to play
     public List<AudioClip> soundsToPlay = new List<AudioClip>();
 
-    // Start is called before the first frame update
+    
     void Start()
     {
         source = GetComponent<AudioSource>();
+    }
+
+    private void OnEnable()
+    {
+        GameManager.GetInstance().TMP_UI_skill.text = GameManager.GetInstance().currentSkill.ToString();
+        GameManager.GetInstance().TMP_UI_difficulty.text = GameManager.GetInstance().currentDifficulty.ToString();
     }
 
     // Update is called once per frame
@@ -49,6 +57,12 @@ public class LockpickSystem : MonoBehaviour
             case (int)Sounds.ACTIVATE:
                 source.loop = false;
                 source.clip = soundsToPlay[(int)Sounds.ACTIVATE];
+                source.Play();
+                break;
+
+            case (int)Sounds.BUZZER:
+                source.loop = false;
+                source.clip = soundsToPlay[(int)Sounds.BUZZER];
                 source.Play();
                 break;
 

@@ -50,13 +50,13 @@ public class MovingBar : MonoBehaviour
             case Difficulty.NORMAL:
                 scale.x = 0.05f * 0.5f;
                 Trigger.transform.localScale = scale;
-                speedOfTrigger *= 1.5f;
+                speedOfTrigger *= 2f;
                 break;
 
             case Difficulty.HARD:
                 scale.x = 0.05f * 0.5f;
                 Trigger.transform.localScale = scale;
-                speedOfTrigger *= 2f;
+                speedOfTrigger *= 3f;
                 break;
         }
     }
@@ -118,13 +118,13 @@ public class MovingBar : MonoBehaviour
             case Difficulty.NORMAL:
                 scale.x = resetScale * 0.5f;
                 Trigger.transform.localScale = scale;
-                speedOfTrigger *= 1.5f;
+                speedOfTrigger *= 2f;
                 break;
 
             case Difficulty.HARD:
                 scale.x = resetScale * 0.5f;
                 Trigger.transform.localScale = scale;
-                speedOfTrigger *= 2f;
+                speedOfTrigger *= 3f;
                 break;
         }
     }
